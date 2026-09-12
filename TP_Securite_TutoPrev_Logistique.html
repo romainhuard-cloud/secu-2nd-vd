@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TP – Sécurité : TutoPrév' Logistique | Lycée Vaucanson</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --vert:#4a9c5d;--vert-clair:#d4edda;--vert-fonce:#2d7a45;
+  --bleu:#4a87c0;--bleu-clair:#d0e6f7;--bleu-fonce:#2b5f96;
+  --gris:#8a9bac;--gris-clair:#e8ecf0;--gris-tres-clair:#f4f6f8;
+  --vc-blue:#2b5f96;
+  --vc-blue-dark:#1f4670;
+  --vc-blue-light:#d0e6f7;
+  --vc-yellow:#f4e04d;
+  --vc-accent:#ff6b35;
+  --ok:#1f9d55;
+  --ko:#e3342f;
+  --gray:var(--gris-tres-clair);
+  --gray-2:var(--gris-clair);
+  --text:#2c3e50;
+  --muted:#5a6470;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:'Barlow',system-ui,-apple-system,sans-serif;color:var(--text);background:#fafbfd}
+header.vc-header{
+  position:sticky;top:0;z-index:100;
+  background:
+    linear-gradient(135deg,rgba(43,95,150,0.88) 0%,rgba(45,122,69,0.84) 100%),
+    url("https://images.unsplash.com/photo-1740914994657-f1cdffdc418e?w=1400&q=80") center/cover no-repeat;
+  color:#fff;padding:14px 26px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+  box-shadow:0 4px 22px rgba(0,0,0,.28);
+}
+header.vc-header img.logo{height:64px;background:#fff;padding:5px 9px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.3)}
+header.vc-header .titles{flex:0 0 auto}
+header.vc-header h1{margin:0;font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;font-weight:700;letter-spacing:.3px}
+header.vc-header .sub{margin:2px 0 0;font-size:.85rem;opacity:.9}
+header.vc-header .sub strong{display:block}
+.header-machine{flex:1;display:flex;align-items:center;justify-content:center;min-width:180px}
+.header-machine span{font-family:'Barlow Condensed',sans-serif;font-size:1.6rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.4),0 0 30px rgba(255,255,255,.15);opacity:.95}
+.header-right{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.timer-box{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);padding:6px 14px;border-radius:8px;font-weight:600}
+.timer-box .t-val{font-family:'Barlow Condensed',monospace;font-size:1.2rem;min-width:78px;text-align:center;font-weight:700}
+.timer-box button{background:var(--vc-yellow);color:#222;border:0;padding:6px 12px;border-radius:6px;font-weight:700;cursor:pointer;font-size:.85rem}
+.timer-box button:hover{background:#ffd900}
+.score-box{background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);border-radius:8px;padding:6px 14px;text-align:center}
+.score-box .lbl{font-size:.65rem;opacity:.8;text-transform:uppercase;letter-spacing:1px}
+.score-box .val{font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:700}
+.progress-wrap{background:#fff;padding:14px 22px;border-bottom:1px solid var(--gray-2)}
+.progress-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.jalon{flex:1;min-width:70px;height:32px;border-radius:6px;background:var(--gray);display:flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--muted);font-weight:600;border:1px solid var(--gray-2);transition:.3s}
+.jalon.done{background:var(--ok);color:#fff;border-color:var(--ok)}
+.jalon.current{background:var(--vc-blue);color:#fff;border-color:var(--vc-blue);box-shadow:0 0 0 3px rgba(11,61,145,.18)}
+main{max-width:1100px;margin:24px auto;padding:0 22px}
+.intro-card{
+  background:#fff;border-radius:12px;padding:24px 28px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:24px;
+  border-left:6px solid var(--vc-yellow);
+}
+.intro-card h2{margin:0 0 12px;color:var(--vc-blue);font-size:1.35rem}
+.mise-en-situation{background:#fff8e6;padding:14px 18px;border-radius:8px;border-left:4px solid var(--vc-accent);margin:14px 0;font-size:.95rem;line-height:1.55}
+.competences-table{width:100%;border-collapse:collapse;margin-top:14px;font-size:.9rem}
+.competences-table th,.competences-table td{border:1px solid var(--gray-2);padding:8px 10px;text-align:left}
+.competences-table th{background:var(--vc-blue-light);color:var(--vc-blue);font-weight:600}
+.question-card{
+  background:#fff;border-radius:12px;padding:22px 26px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px;
+  display:none;
+}
+.question-card.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.q-header{display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--vc-blue-light);padding-bottom:10px;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.q-num{background:var(--vc-blue);color:#fff;padding:6px 14px;border-radius:20px;font-weight:700;font-size:.95rem}
+.q-tag{background:var(--vc-yellow);color:#222;padding:4px 10px;border-radius:14px;font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.5px}
+.yt-fallback{display:inline-block;margin:0 0 18px;padding:10px 20px;background:var(--vc-blue);color:#fff;border-radius:8px;text-decoration:none;font-size:.95rem;font-weight:700}
+.yt-fallback:hover{background:var(--vc-blue-dark)}
+.consigne{background:var(--vc-blue-light);padding:12px 16px;border-radius:6px;font-size:.95rem;color:var(--vc-blue-dark);margin-bottom:14px;border-left:4px solid var(--vc-blue);line-height:1.5}
+.field-label{display:block;font-weight:600;color:var(--vc-blue);margin:14px 0 6px;font-size:.95rem}
+.field-input,.field-area{
+  width:100%;padding:10px 12px;border:2px solid var(--gray-2);border-radius:6px;font-size:.95rem;
+  font-family:inherit;transition:border-color .2s;
+}
+.field-input:focus,.field-area:focus{outline:0;border-color:var(--vc-blue)}
+.field-area{min-height:90px;resize:vertical}
+.field-input.ok,.field-area.ok{border-color:var(--ok);background:#ecfdf5}
+.field-input.ko,.field-area.ko{border-color:var(--ko);background:#fef2f2}
+.field-input:disabled{opacity:1;cursor:not-allowed}
+.correct-answer{display:none;margin:4px 0 0;font-size:.85rem;color:var(--ok);font-weight:600;padding:6px 10px;background:#ecfdf5;border-left:3px solid var(--ok);border-radius:4px}
+.correct-answer.show{display:block}
+.q-actions{display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:10px;flex-wrap:wrap}
+.btn{padding:10px 20px;border:0;border-radius:8px;font-weight:600;cursor:pointer;font-size:.95rem;transition:.2s}
+.btn-primary{background:var(--vc-blue);color:#fff}
+.btn-primary:hover{background:var(--vc-blue-dark)}
+.btn-secondary{background:var(--gray);color:var(--text)}
+.btn-secondary:hover{background:var(--gray-2)}
+.btn-success{background:var(--ok);color:#fff}
+.btn-success:hover{background:#157a40}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.feedback{margin-top:12px;padding:10px 14px;border-radius:6px;font-size:.92rem;display:none}
+.feedback.ok{display:block;background:#ecfdf5;color:#0f5132;border-left:4px solid var(--ok)}
+.feedback.ko{display:block;background:#fef2f2;color:#842029;border-left:4px solid var(--ko)}
+.feedback strong{display:block;margin-bottom:4px}
+.bilan-section{display:none;background:#fff;border-radius:12px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.bilan-section h2{color:var(--vc-blue);margin-top:0}
+.bilan-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:20px 0}
+.bilan-card{background:var(--gray);padding:16px;border-radius:8px;text-align:center}
+.bilan-card .val{font-size:1.8rem;font-weight:700;color:var(--vc-blue)}
+.bilan-card .lbl{font-size:.85rem;color:var(--muted);margin-top:4px}
+.competence-row{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid var(--gray-2)}
+.comp-badge{display:inline-block;width:22px;height:22px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px #888;vertical-align:middle;margin-right:6px}
+.lvl-1{background:#2e7d32}
+.lvl-2{background:#7cb342}
+.lvl-3{background:#c0ca33}
+.lvl-4{background:#fbc02d}
+.lvl-5{background:#ef6c00}
+.lvl-6{background:#c62828}
+.overlay{
+  position:fixed;inset:0;background:linear-gradient(135deg,#2b5f96,#2d7a45);z-index:1000;
+  display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);
+}
+.overlay-card{background:#fff;border-radius:14px;padding:34px 38px;max-width:480px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.overlay-card h2{color:var(--vc-blue);margin:0 0 8px;font-size:1.5rem}
+.overlay-card p{color:var(--muted);margin:0 0 22px;font-size:.93rem;line-height:1.5}
+.overlay-card label{display:block;font-weight:600;color:var(--vc-blue);margin:12px 0 4px;font-size:.9rem}
+.overlay-card select,.overlay-card input{width:100%;padding:10px;border:2px solid var(--gray-2);border-radius:6px;font-size:.95rem;font-family:inherit}
+.overlay-card button{width:100%;margin-top:18px;padding:12px;background:var(--vc-blue);color:#fff;border:0;border-radius:8px;font-weight:700;cursor:pointer;font-size:1rem}
+.overlay-card button:hover{background:var(--vc-blue-dark)}
+.nav-buttons{display:flex;gap:10px;justify-content:center;margin-top:22px;flex-wrap:wrap}
+.start-btn-wrap{text-align:center;margin-top:24px}
+.btn-start{padding:14px 36px;font-size:1.05rem;background:var(--vc-accent);color:#fff;border:0;border-radius:8px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(255,107,53,.35)}
+.btn-start:hover{background:#e8551f}
+.alert-inactivity{position:fixed;bottom:24px;right:24px;background:#fff3cd;color:#664d03;padding:14px 18px;border-radius:8px;border-left:4px solid #f5b800;box-shadow:0 4px 14px rgba(0,0,0,.15);display:none;max-width:300px;z-index:200}
+/* ── AVERTISSEMENT ROUGE + GYROPHARE ── */
+.gyro-warning{background:#fff0f0;border:2px solid var(--ko);border-radius:10px;padding:16px 18px;margin:16px 0;display:flex;align-items:center;gap:16px}
+.gyro{width:36px;height:36px;border-radius:50%;flex:0 0 auto;background:radial-gradient(circle at 35% 30%,#ff8a80,var(--ko) 55%,#7a0000 100%);box-shadow:0 0 12px 4px rgba(227,52,47,.7);animation:gyro-spin 1s linear infinite, gyro-pulse 1s ease-in-out infinite}
+@keyframes gyro-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes gyro-pulse{0%,100%{box-shadow:0 0 10px 3px rgba(227,52,47,.6)}50%{box-shadow:0 0 24px 9px rgba(227,52,47,.95)}}
+.gyro-warning strong{display:block;color:var(--ko);font-size:1.02rem;margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px}
+.gyro-warning p{margin:0;color:#842029;font-size:.92rem;line-height:1.5}
+.checkbox-row{display:flex;align-items:flex-start;gap:10px;background:var(--gray);padding:12px 14px;border-radius:8px;margin:16px 0}
+.checkbox-row input[type=checkbox]{width:20px;height:20px;flex:0 0 auto;margin-top:2px;accent-color:var(--vc-blue)}
+.checkbox-row label{font-size:.92rem;color:var(--text);line-height:1.5;cursor:pointer}
+.step-list{margin:12px 0;padding-left:22px;line-height:1.8;font-size:.95rem}
+.step-list li{margin-bottom:4px}
+@media(max-width:720px){
+  header.vc-header{flex-wrap:wrap}
+  header.vc-header h1{font-size:1.05rem}
+  .jalon{font-size:.7rem;height:28px}
+  main{padding:0 12px;margin:14px auto}
+  .question-card{padding:16px}
+  .gyro-warning{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- ========== OVERLAY IDENTITÉ ========== -->
+<div class="overlay" id="identityOverlay">
+  <div class="overlay-card">
+    <h2>📦 TP Sécurité — TutoPrév' Logistique</h2>
+    <p>Avant de commencer, identifie-toi. Le TP dure <strong>2 heures</strong> et se déroule sur le site TutoPrév' de l'INRS.</p>
+    <label for="studentName">Nom et prénom</label>
+    <input type="text" id="studentName" placeholder="Ex: DUPONT Jean" required>
+    <label for="studentClass">Classe</label>
+    <select id="studentClass" required>
+      <option value="">— Choisis ta classe —</option>
+      <option value="2PMIA1">2 PMIA 1</option>
+      <option value="2PMIA2">2 PMIA 2</option>
+      <option value="2PMIA3">2 PMIA 3</option>
+      <option value="2PMIA4">2 PMIA 4</option>
+      <option value="2PMIA5">2 PMIA 5</option>
+      <option value="1PLP">1 PLP</option>
+      <option value="TPLP">T PLP</option>
+      <option value="1CIPG1">1 CIP G1</option>
+      <option value="1CIPG2">1 CIP G2</option>
+      <option value="2CIPG1">2 CIP G1</option>
+      <option value="2CIPG2">2 CIP G2</option>
+      <option value="GRETA">GRETA</option>
+    </select>
+    <button onclick="startTP()">Commencer le TP</button>
+  </div>
+</div>
+
+<!-- ========== HEADER ========== -->
+<header class="vc-header">
+  <img class="logo" src="https://services.ard.fr/fileadmin/users/grenoble-vaucanson/logo.jpg" alt="Lycée Vaucanson" onerror="this.style.display='none'">
+  <div class="titles">
+    <h1>TP – Sécurité : TutoPrév' Logistique</h1>
+    <div class="sub">
+      <strong>Lycée Polyvalent Vaucanson – Grenoble</strong>
+      BAC PRO PLP · CAP CIP · 2nde PMIA
+    </div>
+  </div>
+  <div class="header-machine">
+    <span>📦 TutoPrév' Logistique</span>
+  </div>
+  <div class="header-right">
+    <div class="score-box">
+      <div class="lbl">Score TutoPrév'</div>
+      <div class="val" id="scoreDisplay">-- %</div>
+    </div>
+    <div class="timer-box">
+      <span>⏱️</span>
+      <span class="t-val" id="timerDisplay">02:00:00</span>
+      <button id="pauseBtn" onclick="togglePause()">Pause</button>
+    </div>
+  </div>
+</header>
+
+<!-- ========== PROGRESS BAR ========== -->
+<div class="progress-wrap">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<!-- ========== MAIN CONTENT ========== -->
+<main>
+
+  <!-- INTRO -->
+  <section class="intro-card" id="introCard">
+    <h2>🎯 Mise en situation</h2>
+    <div class="mise-en-situation">
+      À l'aide du navigateur <strong>Google Chrome</strong>, tu vas accéder au site <strong>TutoPrév' Logistique</strong> de l'INRS et réaliser les <strong>trois quiz</strong> proposés afin d'identifier les risques professionnels liés aux activités de logistique (réception, stockage, préparation de commandes, expédition).
+    </div>
+    <h3 style="color:var(--vc-blue);margin-top:18px">📋 Compétences évaluées</h3>
+    <table class="competences-table">
+      <thead><tr><th>Code</th><th>Compétence associée</th></tr></thead>
+      <tbody>
+        <tr><td><strong>CP 9.3</strong></td><td>Identifier les risques liés aux activités de travail</td></tr>
+        <tr><td><strong>CP 9.5</strong></td><td>Classer les risques auxquels sont soumis les salariés</td></tr>
+        <tr><td><strong>CP 10.4</strong></td><td>Mettre en évidence les effets du risque</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:18px;color:var(--muted);font-size:.9rem">
+      <strong>📝 Déroulement :</strong> le TP se fait en 4 étapes — ouvrir TutoPrév', réaliser les 3 quiz (80% minimum requis), imprimer ton bilan en PDF, puis l'envoyer à ton professeur.
+    </p>
+    <div class="start-btn-wrap">
+      <button class="btn-start" onclick="goToStep(1)">▶ Démarrer l'étape 1</button>
+    </div>
+  </section>
+
+  <!-- ÉTAPES DYNAMIQUES (générées en JS) -->
+  <div id="stepsContainer"></div>
+
+  <!-- BILAN -->
+  <section class="bilan-section" id="bilanSection">
+    <h2>🏁 Bilan du TP</h2>
+    <p style="color:var(--muted)">Récapitulatif de ton travail sur TutoPrév' Logistique.</p>
+    <div class="bilan-grid" id="bilanGrid"></div>
+    <h3 style="color:var(--vc-blue);margin-top:24px">📊 Évaluation des compétences</h3>
+    <div id="competencesBilan"></div>
+    <div id="finalStatus" style="margin-top:16px;text-align:center;font-size:.95rem"></div>
+  </section>
+
+</main>
+
+<!-- ALERTE INACTIVITÉ -->
+<div class="alert-inactivity" id="inactivityAlert">
+  ⚠️ <strong>Pause détectée</strong><br>
+  Tu sembles inactif depuis plus de 5 minutes. Reprends le travail !
+</div>
+
+<script>
+/* ============================================================
+   DONNÉES DU TP — LIENS ET TOKENS
+   ============================================================ */
+const TUTOPREV_URL = 'https://ressources.inrs.fr/tutoprev/content/Logistique/story.html';
+
+const STEP_LABELS = ['1. Ouvrir', '2. Quiz ≥80%', '3. PDF', '4. Envoi'];
+
+/* Mapping compétences par filière (conventions Vaucanson) */
+const COMP_BY_FILIERE = {
+  CIP : ['CP02','CP03','CP05'],
+  PMIA: ['CP2.1','CP3.3','CP6.2'],
+  PLP : ['CP02','CP04','CP08']
+};
+
+/* Liens de partage NextCloud par classe — Nuage Éducation */
+const NC_TOKENS = {
+  '2PMIA1':'https://nuage01.apps.education.fr/index.php/s/SFkasij3W8ZdY6X',
+  '2PMIA2':'https://nuage01.apps.education.fr/index.php/s/KWTiQL5cLkQnRkw',
+  '2PMIA3':'https://nuage01.apps.education.fr/index.php/s/Exk55DptbrJHmL8',
+  '2PMIA4':'https://nuage01.apps.education.fr/index.php/s/NyFcyoajmiDHWBN',
+  '2PMIA5':'https://nuage01.apps.education.fr/index.php/s/wbF4sqQkLCCr5Nj',
+  '1PLP':'https://nuage01.apps.education.fr/index.php/s/Q2LF28DBwcDbaZ3',
+  'TPLP':'https://nuage01.apps.education.fr/index.php/s/rq7TaGNDJc7MxZn',
+  '1CIPG1':'https://nuage01.apps.education.fr/index.php/s/ZDYKjyNzsF4LNNC',
+  '1CIPG2':'https://nuage01.apps.education.fr/index.php/s/KQp5LCtEKJsGXRT',
+  '2CIPG1':'https://nuage01.apps.education.fr/index.php/s/kybKoENkrz9qKEo',
+  '2CIPG2':'https://nuage01.apps.education.fr/index.php/s/5XdDxzyAJDFSgF4',
+  'GRETA':'https://nuage01.apps.education.fr/index.php/s/5Zf3m4FodLiToqg'
+};
+
+/* ============================================================
+   ÉTAT GLOBAL
+   ============================================================ */
+let state = {
+  student:{name:'',classe:''},
+  filiere:'',
+  startTime:null,
+  totalSec:7200,
+  remainingSec:7200,
+  paused:false,
+  currentStep:0,
+  scoreDeclared:null,
+  stepDone:{1:false,2:false,3:false,4:false},
+  keystrokes:0,
+  copyPasteEvents:[],
+  lastActivity:Date.now()
+};
+
+let timerInterval=null, inactivityInterval=null;
+
+/* ============================================================
+   DÉMARRAGE DU TP
+   ============================================================ */
+function startTP(){
+  const name=document.getElementById('studentName').value.trim();
+  const classe=document.getElementById('studentClass').value;
+  if(!name||!classe){alert('Merci de renseigner ton nom et ta classe.');return}
+  state.student.name=name;
+  state.student.classe=classe;
+  state.isGRETA = (classe==='GRETA');
+  if(classe.includes('PMIA')) state.filiere='PMIA';
+  else if(classe.includes('PLP')) state.filiere='PLP';
+  else if(classe.includes('CIP')) state.filiere='CIP';
+  else if(state.isGRETA) state.filiere='GRETA';
+  state.startTime=Date.now();
+  document.getElementById('identityOverlay').style.display='none';
+  buildProgressBar();
+  buildSteps();
+  startTimer();
+  startInactivityWatcher();
+  attachGlobalListeners();
+}
+
+/* ============================================================
+   PROGRESS BAR (4 jalons)
+   ============================================================ */
+function buildProgressBar(){
+  const bar=document.getElementById('progressBar');
+  bar.innerHTML='';
+  STEP_LABELS.forEach((lbl,i)=>{
+    const j=document.createElement('div');
+    j.className='jalon';
+    j.id='jalon-'+(i+1);
+    j.textContent=lbl;
+    j.style.cursor='pointer';
+    j.onclick=()=>goToStep(i+1);
+    bar.appendChild(j);
+  });
+}
+
+function updateProgressBar(){
+  for(let i=1;i<=4;i++){
+    const j=document.getElementById('jalon-'+i);
+    j.classList.remove('done','current');
+    if(state.stepDone[i]) j.classList.add('done');
+    if(i===state.currentStep) j.classList.add('current');
+  }
+}
+
+/* ============================================================
+   CONSTRUCTION DES 4 ÉTAPES
+   ============================================================ */
+function buildSteps(){
+  const cont=document.getElementById('stepsContainer');
+  cont.innerHTML='';
+
+  // ── ÉTAPE 1 : OUVRIR TUTOPRÉV' ──
+  const s1=document.createElement('section');
+  s1.className='question-card';
+  s1.id='step-1';
+  s1.innerHTML=`
+    <div class="q-header">
+      <span class="q-num">Étape 1 / 4</span>
+      <span class="q-tag">TutoPrév'</span>
+    </div>
+    <div class="consigne">
+      🔗 Ouvre le site <strong>TutoPrév' Logistique</strong> de l'INRS dans un nouvel onglet (utilise de préférence Google Chrome).
+    </div>
+    <div class="start-btn-wrap" style="margin:20px 0">
+      <a class="yt-fallback" href="${TUTOPREV_URL}" target="_blank" rel="noopener">📦 Ouvrir TutoPrév' Logistique</a>
+    </div>
+    <div class="checkbox-row">
+      <input type="checkbox" id="check-step1" onchange="toggleStep1()">
+      <label for="check-step1">J'ai bien ouvert le site TutoPrév' Logistique dans un nouvel onglet.</label>
+    </div>
+    <div class="feedback" id="feedback-1"></div>
+    <div class="q-actions">
+      <button class="btn btn-secondary" disabled>◀ Précédent</button>
+      <span></span>
+      <button class="btn btn-success" id="next-1" onclick="goToStep(2)" disabled>Suivant ▶</button>
+    </div>
+  `;
+  cont.appendChild(s1);
+
+  // ── ÉTAPE 2 : RÉALISER LES 3 QUIZ (≥80%) ──
+  const s2=document.createElement('section');
+  s2.className='question-card';
+  s2.id='step-2';
+  s2.innerHTML=`
+    <div class="q-header">
+      <span class="q-num">Étape 2 / 4</span>
+      <span class="q-tag">TutoPrév'</span>
+    </div>
+    <div class="consigne">
+      🎯 Réalise les <strong>trois quiz</strong> proposés sur TutoPrév' Logistique.
+    </div>
+    <div class="gyro-warning">
+      <div class="gyro"></div>
+      <div><strong>Attention</strong><p>Un minimum de <strong>80%</strong> est nécessaire pour valider l'activité. En dessous de ce seuil, tu dois recommencer le(s) quiz jusqu'à obtenir au moins 80%.</p></div>
+    </div>
+    <label class="field-label" for="scoreInput">Score final obtenu sur TutoPrév' (%)</label>
+    <input type="number" class="field-input" id="scoreInput" min="0" max="100" placeholder="Ex : 85">
+    <div class="feedback" id="feedback-2"></div>
+    <div class="q-actions">
+      <button class="btn btn-secondary" onclick="goToStep(1)">◀ Précédent</button>
+      <button class="btn btn-primary" onclick="validateStep2()">✓ Valider mon score</button>
+      <button class="btn btn-success" id="next-2" onclick="goToStep(3)" disabled>Suivant ▶</button>
+    </div>
+  `;
+  cont.appendChild(s2);
+
+  // ── ÉTAPE 3 : IMPRIMER LE BILAN EN PDF ──
+  const s3=document.createElement('section');
+  s3.className='question-card';
+  s3.id='step-3';
+  s3.innerHTML=`
+    <div class="q-header">
+      <span class="q-num">Étape 3 / 4</span>
+      <span class="q-tag">TutoPrév'</span>
+    </div>
+    <div class="consigne">
+      🖨️ Une fois les 3 quiz terminés avec au moins 80%, termine la procédure sur TutoPrév' :
+    </div>
+    <ol class="step-list">
+      <li>Clique sur <strong>« Imprimer le résultat »</strong> sur le site TutoPrév'.</li>
+      <li>Renseigne ton <strong>nom</strong> dans le champ demandé.</li>
+      <li>Clique sur <strong>« Imprimer votre bilan »</strong>.</li>
+    </ol>
+    <div class="gyro-warning">
+      <div class="gyro"></div>
+      <div><strong>Attention — à ne surtout pas oublier</strong><p>Dans la fenêtre d'impression, choisis bien <strong>« Enregistrer au format PDF »</strong> comme imprimante (et non une imprimante physique), afin de pouvoir envoyer ton bilan à ton enseignant. Sans PDF, tu ne pourras pas transmettre ton travail !</p></div>
+    </div>
+    <div class="checkbox-row">
+      <input type="checkbox" id="check-step3" onchange="toggleStep3()">
+      <label for="check-step3">J'ai bien imprimé mon bilan TutoPrév' au format PDF et je l'ai enregistré sur mon ordinateur.</label>
+    </div>
+    <div class="feedback" id="feedback-3"></div>
+    <div class="q-actions">
+      <button class="btn btn-secondary" onclick="goToStep(2)">◀ Précédent</button>
+      <span></span>
+      <button class="btn btn-success" id="next-3" onclick="goToStep(4)" disabled>Suivant ▶</button>
+    </div>
+  `;
+  cont.appendChild(s3);
+
+  // ── ÉTAPE 4 : ENVOI AU PROFESSEUR ──
+  const s4=document.createElement('section');
+  s4.className='question-card';
+  s4.id='step-4';
+  s4.innerHTML=`
+    <div class="q-header">
+      <span class="q-num">Étape 4 / 4</span>
+      <span class="q-tag">TutoPrév'</span>
+    </div>
+    <div class="consigne">
+      ☁️ Sélectionne le PDF de ton bilan TutoPrév' (celui que tu viens d'enregistrer sur ton ordinateur) puis envoie-le à ton professeur.
+    </div>
+    <label class="field-label" for="pdfFile">Fichier PDF de ton bilan TutoPrév'</label>
+    <input type="file" class="field-input" id="pdfFile" accept="application/pdf,.pdf">
+    <div class="q-actions">
+      <button class="btn btn-secondary" onclick="goToStep(3)">◀ Précédent</button>
+      <button class="btn btn-success" onclick="uploadNextcloud()">☁️ Envoyer au professeur</button>
+      <button class="btn btn-primary" onclick="showBilan()">🏁 Voir le bilan</button>
+    </div>
+    <div id="uploadStatus" style="margin-top:14px;text-align:center;font-size:.9rem"></div>
+  `;
+  cont.appendChild(s4);
+}
+
+function toggleStep1(){
+  const checked=document.getElementById('check-step1').checked;
+  state.stepDone[1]=checked;
+  document.getElementById('next-1').disabled=!checked;
+  updateProgressBar();
+}
+
+function toggleStep3(){
+  const checked=document.getElementById('check-step3').checked;
+  state.stepDone[3]=checked;
+  document.getElementById('next-3').disabled=!checked;
+  updateProgressBar();
+}
+
+function validateStep2(){
+  const input=document.getElementById('scoreInput');
+  const fbEl=document.getElementById('feedback-2');
+  const val=parseInt(input.value,10);
+
+  if(isNaN(val) || val<0 || val>100){
+    fbEl.className='feedback ko';
+    fbEl.innerHTML='<strong>⚠️ Score invalide</strong>Indique un score entre 0 et 100.';
+    return;
+  }
+
+  state.scoreDeclared=val;
+  updateScoreDisplay();
+
+  if(val<80){
+    input.classList.remove('ok'); input.classList.add('ko');
+    fbEl.className='feedback ko';
+    fbEl.innerHTML=`<strong>⚠️ ${val}% — Score insuffisant</strong>Le minimum requis est 80%. Retourne sur TutoPrév' et recommence le(s) quiz avant de continuer.`;
+    document.getElementById('next-2').disabled=true;
+    state.stepDone[2]=false;
+  } else {
+    input.classList.remove('ko'); input.classList.add('ok');
+    fbEl.className='feedback ok';
+    fbEl.innerHTML=`<strong>✅ ${val}% — Score validé</strong>Bravo, tu peux passer à l'étape suivante.`;
+    document.getElementById('next-2').disabled=false;
+    state.stepDone[2]=true;
+  }
+  updateProgressBar();
+}
+
+function updateScoreDisplay(){
+  const el=document.getElementById('scoreDisplay');
+  if(el) el.textContent = state.scoreDeclared===null ? '-- %' : state.scoreDeclared+' %';
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+function goToStep(n){
+  document.getElementById('introCard').style.display=(n===0)?'block':'none';
+  document.getElementById('bilanSection').style.display='none';
+  for(let i=1;i<=4;i++){
+    const card=document.getElementById('step-'+i);
+    if(card) card.classList.remove('active');
+  }
+  if(n>0 && n<=4){
+    document.getElementById('step-'+n).classList.add('active');
+    state.currentStep=n;
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  updateProgressBar();
+}
+
+/* ============================================================
+   BILAN FINAL
+   ============================================================ */
+function showBilan(){
+  for(let i=1;i<=4;i++){
+    const card=document.getElementById('step-'+i);
+    if(card) card.classList.remove('active');
+  }
+  document.getElementById('introCard').style.display='none';
+  const bilan=document.getElementById('bilanSection');
+  bilan.style.display='block';
+  state.currentStep=0;
+  updateProgressBar();
+
+  const pct = state.scoreDeclared===null ? 0 : state.scoreDeclared;
+  const elapsed=Math.round((Date.now()-state.startTime)/1000);
+  const hh=Math.floor(elapsed/3600), mm=Math.floor((elapsed%3600)/60), ss=elapsed%60;
+  const elapsedStr=`${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+  const etapesOk=Object.values(state.stepDone).filter(v=>v).length;
+
+  document.getElementById('bilanGrid').innerHTML=`
+    <div class="bilan-card"><div class="val">${pct}%</div><div class="lbl">Score TutoPrév'</div></div>
+    <div class="bilan-card"><div class="val">${etapesOk}/4</div><div class="lbl">Étapes complétées</div></div>
+    <div class="bilan-card"><div class="val">${elapsedStr}</div><div class="lbl">Temps écoulé</div></div>
+    <div class="bilan-card"><div class="val">${state.student.classe}</div><div class="lbl">Classe</div></div>
+  `;
+
+  const niveau = pct>=90 ? 1 : pct>=80 ? 2 : pct>=60 ? 3 : pct>=45 ? 4 : pct>=25 ? 5 : 6;
+  const niveauLabels=['','Excellent','Très bon','Bon','Moyen','Insuffisant','Très insuffisant'];
+  let compHTML='';
+  if(state.isGRETA){
+    const note20=(pct/100*20).toFixed(1);
+    compHTML+=`<div class="competence-row"><span><strong>Note</strong></span><span style="font-size:1.3rem;font-weight:700;color:var(--vc-blue)">${note20} / 20</span></div>`;
+  } else {
+    const compCodes = COMP_BY_FILIERE[state.filiere] || ['CP 9.3','CP 9.5','CP 10.4'];
+    compCodes.forEach(c=>{
+      compHTML+=`<div class="competence-row">
+        <span><strong>${c}</strong></span>
+        <span><span class="comp-badge lvl-${niveau}"></span>${niveauLabels[niveau]}</span>
+      </div>`;
+    });
+  }
+  compHTML+=`<p style="font-size:.82rem;color:var(--muted);margin-top:10px;font-style:italic">Évaluation évolutive, sous réserve du comportement en classe et du travail effectué.</p>`;
+  document.getElementById('competencesBilan').innerHTML=compHTML;
+
+  const finalEl=document.getElementById('finalStatus');
+  if(pct<80){
+    finalEl.innerHTML="<span style=\"color:var(--ko);font-weight:600\">⚠️ Le score déclaré est inférieur à 80% — le TP n'est pas validé. Recommence les quiz sur TutoPrév'.</span>";
+  } else {
+    finalEl.innerHTML="<span style=\"color:var(--ok);font-weight:600\">✅ TP validé. Assure-toi d'avoir bien envoyé ton PDF à ton professeur (étape 4).</span>";
+  }
+
+  clearInterval(timerInterval);
+}
+
+/* ============================================================
+   TIMER 2H
+   ============================================================ */
+function startTimer(){
+  timerInterval=setInterval(()=>{
+    if(state.paused) return;
+    state.remainingSec--;
+    if(state.remainingSec<=0){
+      state.remainingSec=0;
+      clearInterval(timerInterval);
+      alert('⏰ Temps écoulé ! Le TP se termine maintenant.');
+      showBilan();
+    }
+    updateTimerDisplay();
+  },1000);
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay(){
+  const h=Math.floor(state.remainingSec/3600);
+  const m=Math.floor((state.remainingSec%3600)/60);
+  const s=state.remainingSec%60;
+  document.getElementById('timerDisplay').textContent=
+    `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function togglePause(){
+  state.paused=!state.paused;
+  document.getElementById('pauseBtn').textContent=state.paused?'Reprendre':'Pause';
+}
+
+/* ============================================================
+   TRACKING COMPORTEMENTAL
+   ============================================================ */
+function attachGlobalListeners(){
+  document.addEventListener('keydown',()=>{
+    state.keystrokes++;
+    state.lastActivity=Date.now();
+  });
+  document.addEventListener('paste',()=>{
+    state.copyPasteEvents.push({action:'paste',time:new Date().toISOString(),step:state.currentStep});
+    state.lastActivity=Date.now();
+  });
+  document.addEventListener('copy',()=>{
+    state.copyPasteEvents.push({action:'copy',time:new Date().toISOString(),step:state.currentStep});
+    state.lastActivity=Date.now();
+  });
+  document.addEventListener('click',()=>{state.lastActivity=Date.now()});
+}
+
+function startInactivityWatcher(){
+  inactivityInterval=setInterval(()=>{
+    if(state.paused) return;
+    const idle=(Date.now()-state.lastActivity)/1000;
+    const alertBox=document.getElementById('inactivityAlert');
+    alertBox.style.display = idle>300 ? 'block' : 'none';
+  },10000);
+}
+
+/* Extrait le token d'un lien de partage NextCloud (dernier segment d'URL) */
+function extractShareToken(shareUrl){
+  const parts = shareUrl.split('/');
+  return parts[parts.length-1];
+}
+
+/* ============================================================
+   ENVOI AU PROFESSEUR (NextCloud)
+   Tente d'abord un envoi automatique en arrière-plan (WebDAV) du PDF
+   sélectionné par l'élève (celui imprimé depuis TutoPrév').
+   Si le serveur bloque la requête (CORS, réseau de l'établissement),
+   bascule automatiquement sur le dépôt manuel (ouverture du dossier
+   de la classe pour glisser-déposer le fichier déjà sur l'ordinateur).
+   ============================================================ */
+async function uploadNextcloud(){
+  const statusEl=document.getElementById('uploadStatus');
+  const fileInput=document.getElementById('pdfFile');
+
+  if(!fileInput.files || fileInput.files.length===0){
+    statusEl.innerHTML="⚠️ <span style=\"color:var(--ko)\">Sélectionne d'abord le fichier PDF de ton bilan TutoPrév'.</span>";
+    return;
+  }
+  const file=fileInput.files[0];
+  const isPdf = file.type==='application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+  if(!isPdf){
+    statusEl.innerHTML="⚠️ <span style=\"color:var(--ko)\">Le fichier sélectionné n'est pas un PDF. Vérifie que tu as bien imprimé ton bilan « Enregistrer au format PDF ».</span>";
+    return;
+  }
+
+  const shareUrl=NC_TOKENS[state.student.classe];
+  if(!shareUrl){
+    statusEl.innerHTML='❌ <span style="color:var(--ko)">Aucun dossier de dépôt configuré pour cette classe.</span>';
+    return;
+  }
+
+  statusEl.innerHTML='⏳ Envoi en cours...';
+  const token=extractShareToken(shareUrl);
+  const filename=`Bilan_TutoPrev_Logistique_${state.student.name.replace(/\s+/g,'_')}_${state.student.classe}.pdf`;
+
+  let autoOk=false;
+  try{
+    const webdavUrl = `https://nuage01.apps.education.fr/public.php/webdav/${encodeURIComponent(filename)}`;
+    const resp = await fetch(webdavUrl,{
+      method:'PUT',
+      headers:{
+        'Authorization':'Basic '+btoa(token+':'),
+        'Content-Type':'application/pdf'
+      },
+      body:file,
+      mode:'cors'
+    });
+    if(resp.ok || resp.status===201 || resp.status===204) autoOk=true;
+  }catch(e){
+    console.warn('Envoi automatique bloqué (CORS/réseau), bascule sur le dépôt manuel :', e);
+  }
+
+  state.stepDone[4]=true;
+  updateProgressBar();
+
+  if(autoOk){
+    statusEl.innerHTML=`✅ <span style="color:var(--ok)">Ton bilan TutoPrév' a été envoyé automatiquement au professeur (dossier <strong>${state.student.classe}</strong>) !</span>`;
+    return;
+  }
+
+  window.open(shareUrl,'_blank');
+  statusEl.innerHTML=`⚠️ <span style="color:var(--ko)">Envoi automatique impossible depuis ce réseau.</span><br><span style="font-size:.85rem;color:var(--muted)">Le dossier NextCloud de la classe <strong>${state.student.classe}</strong> vient de s'ouvrir dans un nouvel onglet : glisse-dépose ton fichier <strong>${file.name}</strong> dedans pour le transmettre à ton professeur.</span>`;
+}
+</script>
+</body>
+</html>

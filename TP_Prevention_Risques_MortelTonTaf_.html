@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TP – Prévention des Risques Professionnels | #MortelTonTaf | Lycée Vaucanson</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --vert:#4a9c5d;--vert-clair:#d4edda;--vert-fonce:#2d7a45;
+  --bleu:#4a87c0;--bleu-clair:#d0e6f7;--bleu-fonce:#2b5f96;
+  --gris:#8a9bac;--gris-clair:#e8ecf0;--gris-tres-clair:#f4f6f8;
+  --vc-blue:#2b5f96;
+  --vc-blue-dark:#1f4670;
+  --vc-blue-light:#d0e6f7;
+  --vc-yellow:#f4e04d;
+  --vc-accent:#ff6b35;
+  --ok:#1f9d55;
+  --ko:#e3342f;
+  --gray:var(--gris-tres-clair);
+  --gray-2:var(--gris-clair);
+  --text:#2c3e50;
+  --muted:#5a6470;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:'Barlow',system-ui,-apple-system,sans-serif;color:var(--text);background:#fafbfd}
+header.vc-header{
+  position:sticky;top:0;z-index:100;
+  background:
+    linear-gradient(135deg,rgba(43,95,150,0.88) 0%,rgba(45,122,69,0.84) 100%),
+    url("https://images.unsplash.com/photo-1552879890-3a06dd3a06c2?w=1400&q=80") center/cover no-repeat;
+  color:#fff;padding:14px 26px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+  box-shadow:0 4px 22px rgba(0,0,0,.28);
+}
+header.vc-header img.logo{height:64px;background:#fff;padding:5px 9px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.3)}
+header.vc-header .titles{flex:0 0 auto}
+header.vc-header h1{margin:0;font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;font-weight:700;letter-spacing:.3px}
+header.vc-header .sub{margin:2px 0 0;font-size:.85rem;opacity:.9}
+header.vc-header .sub strong{display:block}
+.header-machine{flex:1;display:flex;align-items:center;justify-content:center;min-width:180px}
+.header-machine span{font-family:'Barlow Condensed',sans-serif;font-size:1.6rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.4),0 0 30px rgba(255,255,255,.15);opacity:.95}
+.header-right{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.timer-box{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);padding:6px 14px;border-radius:8px;font-weight:600}
+.timer-box .t-val{font-family:'Barlow Condensed',monospace;font-size:1.2rem;min-width:78px;text-align:center;font-weight:700}
+.timer-box button{background:var(--vc-yellow);color:#222;border:0;padding:6px 12px;border-radius:6px;font-weight:700;cursor:pointer;font-size:.85rem}
+.timer-box button:hover{background:#ffd900}
+.score-box{background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);border-radius:8px;padding:6px 14px;text-align:center}
+.score-box .lbl{font-size:.65rem;opacity:.8;text-transform:uppercase;letter-spacing:1px}
+.score-box .val{font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:700}
+.progress-wrap{background:#fff;padding:14px 22px;border-bottom:1px solid var(--gray-2)}
+.progress-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.jalon{flex:1;min-width:70px;height:32px;border-radius:6px;background:var(--gray);display:flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--muted);font-weight:600;border:1px solid var(--gray-2);transition:.3s}
+.jalon.done{background:var(--ok);color:#fff;border-color:var(--ok)}
+.jalon.current{background:var(--vc-blue);color:#fff;border-color:var(--vc-blue);box-shadow:0 0 0 3px rgba(11,61,145,.18)}
+main{max-width:1100px;margin:24px auto;padding:0 22px}
+.intro-card{
+  background:#fff;border-radius:12px;padding:24px 28px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:24px;
+  border-left:6px solid var(--vc-yellow);
+}
+.intro-card h2{margin:0 0 12px;color:var(--vc-blue);font-size:1.35rem}
+.mise-en-situation{background:#fff8e6;padding:14px 18px;border-radius:8px;border-left:4px solid var(--vc-accent);margin:14px 0;font-size:.95rem;line-height:1.55}
+.competences-table{width:100%;border-collapse:collapse;margin-top:14px;font-size:.9rem}
+.competences-table th,.competences-table td{border:1px solid var(--gray-2);padding:8px 10px;text-align:left}
+.competences-table th{background:var(--vc-blue-light);color:var(--vc-blue);font-weight:600}
+.question-card{
+  background:#fff;border-radius:12px;padding:22px 26px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px;
+  display:none;
+}
+.question-card.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.q-header{display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--vc-blue-light);padding-bottom:10px;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.q-num{background:var(--vc-blue);color:#fff;padding:6px 14px;border-radius:20px;font-weight:700;font-size:.95rem}
+.q-tag{background:var(--vc-yellow);color:#222;padding:4px 10px;border-radius:14px;font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.5px}
+.video-wrap{
+  position:relative;width:100%;padding-bottom:56.25%;height:0;
+  border-radius:8px;overflow:hidden;background:#000;margin:14px 0 10px;
+  box-shadow:0 4px 14px rgba(0,0,0,.18);
+}
+.video-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+.yt-fallback{display:inline-block;margin:0 0 18px;padding:8px 16px;background:var(--ko);color:#fff;border-radius:6px;text-decoration:none;font-size:.85rem;font-weight:600}
+.yt-fallback:hover{background:#c0281f}
+.consigne{background:var(--vc-blue-light);padding:12px 16px;border-radius:6px;font-size:.95rem;color:var(--vc-blue-dark);margin-bottom:14px;border-left:4px solid var(--vc-blue);line-height:1.5}
+.field-label{display:block;font-weight:600;color:var(--vc-blue);margin:14px 0 6px;font-size:.95rem}
+.field-input,.field-area{
+  width:100%;padding:10px 12px;border:2px solid var(--gray-2);border-radius:6px;font-size:.95rem;
+  font-family:inherit;transition:border-color .2s;
+}
+.field-input:focus,.field-area:focus{outline:0;border-color:var(--vc-blue)}
+.field-area{min-height:90px;resize:vertical}
+.field-input.ok,.field-area.ok{border-color:var(--ok);background:#ecfdf5}
+.field-input.ko,.field-area.ko{border-color:var(--ko);background:#fef2f2}
+.field-input:disabled{opacity:1;cursor:not-allowed}
+.correct-answer{display:none;margin:4px 0 0;font-size:.85rem;color:var(--ok);font-weight:600;padding:6px 10px;background:#ecfdf5;border-left:3px solid var(--ok);border-radius:4px}
+.correct-answer.show{display:block}
+.q-actions{display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:10px;flex-wrap:wrap}
+.btn{padding:10px 20px;border:0;border-radius:8px;font-weight:600;cursor:pointer;font-size:.95rem;transition:.2s}
+.btn-primary{background:var(--vc-blue);color:#fff}
+.btn-primary:hover{background:var(--vc-blue-dark)}
+.btn-secondary{background:var(--gray);color:var(--text)}
+.btn-secondary:hover{background:var(--gray-2)}
+.btn-success{background:var(--ok);color:#fff}
+.btn-success:hover{background:#157a40}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.feedback{margin-top:12px;padding:10px 14px;border-radius:6px;font-size:.92rem;display:none}
+.feedback.ok{display:block;background:#ecfdf5;color:#0f5132;border-left:4px solid var(--ok)}
+.feedback.ko{display:block;background:#fef2f2;color:#842029;border-left:4px solid var(--ko)}
+.feedback strong{display:block;margin-bottom:4px}
+.bilan-section{display:none;background:#fff;border-radius:12px;padding:28px;box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.bilan-section h2{color:var(--vc-blue);margin-top:0}
+.bilan-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:20px 0}
+.bilan-card{background:var(--gray);padding:16px;border-radius:8px;text-align:center}
+.bilan-card .val{font-size:1.8rem;font-weight:700;color:var(--vc-blue)}
+.bilan-card .lbl{font-size:.85rem;color:var(--muted);margin-top:4px}
+.competence-row{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid var(--gray-2)}
+.comp-badge{display:inline-block;width:22px;height:22px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px #888;vertical-align:middle;margin-right:6px}
+.lvl-1{background:#2e7d32}
+.lvl-2{background:#7cb342}
+.lvl-3{background:#c0ca33}
+.lvl-4{background:#fbc02d}
+.lvl-5{background:#ef6c00}
+.lvl-6{background:#c62828}
+.overlay{
+  position:fixed;inset:0;background:linear-gradient(135deg,#2b5f96,#2d7a45);z-index:1000;
+  display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);
+}
+.overlay-card{background:#fff;border-radius:14px;padding:34px 38px;max-width:480px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.overlay-card h2{color:var(--vc-blue);margin:0 0 8px;font-size:1.5rem}
+.overlay-card p{color:var(--muted);margin:0 0 22px;font-size:.93rem;line-height:1.5}
+.overlay-card label{display:block;font-weight:600;color:var(--vc-blue);margin:12px 0 4px;font-size:.9rem}
+.overlay-card select,.overlay-card input{width:100%;padding:10px;border:2px solid var(--gray-2);border-radius:6px;font-size:.95rem;font-family:inherit}
+.overlay-card button{width:100%;margin-top:18px;padding:12px;background:var(--vc-blue);color:#fff;border:0;border-radius:8px;font-weight:700;cursor:pointer;font-size:1rem}
+.overlay-card button:hover{background:var(--vc-blue-dark)}
+.nav-buttons{display:flex;gap:10px;justify-content:center;margin-top:22px;flex-wrap:wrap}
+.start-btn-wrap{text-align:center;margin-top:24px}
+.btn-start{padding:14px 36px;font-size:1.05rem;background:var(--vc-accent);color:#fff;border:0;border-radius:8px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(255,107,53,.35)}
+.btn-start:hover{background:#e8551f}
+.alert-inactivity{position:fixed;bottom:24px;right:24px;background:#fff3cd;color:#664d03;padding:14px 18px;border-radius:8px;border-left:4px solid #f5b800;box-shadow:0 4px 14px rgba(0,0,0,.15);display:none;max-width:300px;z-index:200}
+@media(max-width:720px){
+  header.vc-header{flex-wrap:wrap}
+  header.vc-header h1{font-size:1.05rem}
+  .jalon{font-size:.7rem;height:28px}
+  main{padding:0 12px;margin:14px auto}
+  .question-card{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- ========== OVERLAY IDENTITÉ ========== -->
+<div class="overlay" id="identityOverlay">
+  <div class="overlay-card">
+    <h2>🛡️ TP Prévention des Risques Professionnels</h2>
+    <p>Avant de commencer, identifie-toi. Le TP dure <strong>2 heures</strong> et propose 6 vidéos #MortelTonTaf à analyser.</p>
+    <label for="studentName">Nom et prénom</label>
+    <input type="text" id="studentName" placeholder="Ex: DUPONT Jean" required>
+    <label for="studentClass">Classe</label>
+    <select id="studentClass" required>
+      <option value="">— Choisis ta classe —</option>
+      <option value="2PMIA1">2 PMIA 1</option>
+      <option value="2PMIA2">2 PMIA 2</option>
+      <option value="2PMIA3">2 PMIA 3</option>
+      <option value="2PMIA4">2 PMIA 4</option>
+      <option value="2PMIA5">2 PMIA 5</option>
+      <option value="1PLP">1 PLP</option>
+      <option value="TPLP">T PLP</option>
+      <option value="1CIPG1">1 CIP G1</option>
+      <option value="1CIPG2">1 CIP G2</option>
+      <option value="2CIPG1">2 CIP G1</option>
+      <option value="2CIPG2">2 CIP G2</option>
+      <option value="GRETA">GRETA</option>
+    </select>
+    <button onclick="startTP()">Commencer le TP</button>
+  </div>
+</div>
+
+<!-- ========== HEADER ========== -->
+<header class="vc-header">
+  <img class="logo" src="https://services.ard.fr/fileadmin/users/grenoble-vaucanson/logo.jpg" alt="Lycée Vaucanson" onerror="this.style.display='none'">
+  <div class="titles">
+    <h1>TP – Prévention des Risques Professionnels</h1>
+    <div class="sub">
+      <strong>Lycée Polyvalent Vaucanson – Grenoble</strong>
+      BAC PRO PLP · CAP CIP · 2nde PMIA
+    </div>
+  </div>
+  <div class="header-machine">
+    <span>🛡️ #MortelTonTaf</span>
+  </div>
+  <div class="header-right">
+    <div class="score-box">
+      <div class="lbl">Score</div>
+      <div class="val" id="scoreDisplay">0 / 24</div>
+    </div>
+    <div class="timer-box">
+      <span>⏱️</span>
+      <span class="t-val" id="timerDisplay">02:00:00</span>
+      <button id="pauseBtn" onclick="togglePause()">Pause</button>
+    </div>
+  </div>
+</header>
+
+<!-- ========== PROGRESS BAR ========== -->
+<div class="progress-wrap">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<!-- ========== MAIN CONTENT ========== -->
+<main>
+
+  <!-- INTRO -->
+  <section class="intro-card" id="introCard">
+    <h2>🎯 Mise en situation</h2>
+    <div class="mise-en-situation">
+      Le pilote ou le conducteur doit, dans toutes les situations de travail, <strong>identifier et analyser les risques</strong>. Il doit prendre et adopter les mesures adaptées à la sécurité. Ces quelques vidéos offrent une approche et une sensibilisation à la prévention des risques professionnels et à son fonctionnement.
+    </div>
+    <h3 style="color:var(--vc-blue);margin-top:18px">📋 Activité A4 — Compétences évaluées</h3>
+    <table class="competences-table">
+      <thead><tr><th>Code</th><th>Compétence associée</th></tr></thead>
+      <tbody>
+        <tr><td><strong>CP 9.3</strong></td><td>Identifier les risques liés aux activités de travail</td></tr>
+        <tr><td><strong>CP 9.5</strong></td><td>Classer les risques auxquels sont soumis les salariés</td></tr>
+        <tr><td><strong>CP 10.4</strong></td><td>Mettre en évidence les effets du risque</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:18px;color:var(--muted);font-size:.9rem">
+      <strong>📝 Consigne :</strong> Pour chaque vidéo, visionne-la entièrement puis remplis les champs demandés :
+      <em>Titre de la vidéo</em> et <em>Message de prévention</em> donné par l'artiste.
+    </p>
+    <div class="start-btn-wrap">
+      <button class="btn-start" onclick="goToQ(1)">▶ Démarrer la vidéo n°1</button>
+    </div>
+  </section>
+
+  <!-- QUESTIONS DYNAMIQUES (générées en JS) -->
+  <div id="questionsContainer"></div>
+
+  <!-- BILAN -->
+  <section class="bilan-section" id="bilanSection">
+    <h2>🏁 Bilan du TP</h2>
+    <p style="color:var(--muted)">Voici le récapitulatif de ton travail. Une fiche bilan PDF peut être téléchargée et transmise à ton enseignant.</p>
+    <div class="bilan-grid" id="bilanGrid"></div>
+    <h3 style="color:var(--vc-blue);margin-top:24px">📊 Évaluation des compétences</h3>
+    <div id="competencesBilan"></div>
+    <div class="nav-buttons">
+      <button class="btn btn-primary" onclick="downloadPDF()">📄 Télécharger la fiche bilan PDF</button>
+      <button class="btn btn-success" onclick="uploadNextcloud()">☁️ Envoyer au professeur</button>
+    </div>
+    <div id="uploadStatus" style="margin-top:14px;text-align:center;font-size:.9rem"></div>
+  </section>
+
+</main>
+
+<!-- ALERTE INACTIVITÉ -->
+<div class="alert-inactivity" id="inactivityAlert">
+  ⚠️ <strong>Pause détectée</strong><br>
+  Tu sembles inactif depuis plus de 5 minutes. Reprends le travail !
+</div>
+
+<script>
+/* ============================================================
+   DONNÉES DU TP — 6 VIDÉOS #MortelTonTaf
+   ============================================================ */
+const IDEES_RECUES = [
+  "Les risques, ça fait partie du métier",
+  "Les accidents du travail, ça n'arrive qu'aux autres",
+  "Bien équipé, il ne peut rien m'arriver",
+  "La prévention, c'est compliqué",
+  "Je ne peux rien faire face aux risques",
+  "Au travail, il n'y a pas de risque"
+];
+
+const VIDEOS = [
+  { id:1, ytId:'EVvCbssWjyM', episode:"E1 — Les risques, ça fait partie du métier",
+    questions:[
+      { label:"Quelle idée reçue cette vidéo tourne-t-elle en dérision ?",
+        options: IDEES_RECUES, correct:0 },
+      { label:"Quel est le danger de cette idée reçue ?",
+        options:[
+          "Elle pousse à banaliser et accepter des risques qui pourraient être évités",
+          "Elle n'a aucune conséquence, c'est juste une façon de parler",
+          "Elle concerne uniquement les métiers du BTP",
+          "Elle est vraie : le risque zéro n'existe pas donc il ne sert à rien d'agir"
+        ], correct:0 },
+      { label:"Que répond la prévention à cette idée reçue ?",
+        options:[
+          "Un accident n'est jamais une fatalité : il a toujours une ou plusieurs causes identifiables et évitables",
+          "Il faut accepter qu'un métier dangereux comporte forcément des accidents",
+          "Seuls les débutants doivent faire attention, les plus expérimentés ne risquent rien",
+          "La sécurité est uniquement l'affaire de l'employeur"
+        ], correct:0 },
+      { label:"Dans ton atelier, quelle action illustre le mieux ce message ?",
+        options:[
+          "Signaler une situation dangereuse à ton professeur ou au référent sécurité",
+          "Continuer à utiliser une machine si tu es pressé, même sans capot de protection",
+          "Ne rien dire pour ne pas déranger",
+          "Attendre qu'un accident arrive pour agir"
+        ], correct:0 }
+    ]
+  },
+  { id:2, ytId:'4bLOnFoAChY', episode:"E2 — Les accidents du travail, ça n'arrive qu'aux autres",
+    questions:[
+      { label:"Quelle idée reçue cette vidéo tourne-t-elle en dérision ?",
+        options: IDEES_RECUES, correct:1 },
+      { label:"Quel est le danger de cette idée reçue ?",
+        options:[
+          "Elle donne un faux sentiment d'invulnérabilité qui pousse à moins de vigilance",
+          "Elle est vraie pour les jeunes salariés",
+          "Elle ne concerne que les grandes entreprises",
+          "Elle pousse à trop de prudence"
+        ], correct:0 },
+      { label:"Que répond la prévention à cette idée reçue ?",
+        options:[
+          "Les jeunes de moins de 30 ans ont un indice de fréquence d'accidents du travail plus élevé que le reste des salariés",
+          "Les accidents ne touchent que les intérimaires",
+          "Statistiquement, personne n'est jamais concerné",
+          "Les accidents sont dus au hasard, impossible de les prévenir"
+        ], correct:0 },
+      { label:"Quelle bonne pratique illustre ce message dans ton atelier ?",
+        options:[
+          "Rester vigilant même sur des tâches que tu maîtrises bien, surtout en début d'année",
+          "Penser que ça n'arrive qu'aux autres élèves",
+          "Se relâcher une fois la formation terminée",
+          "Ignorer les consignes car « ça n'arrive jamais ici »"
+        ], correct:0 }
+    ]
+  },
+  { id:3, ytId:'tCPLUDosL5Q', episode:"E3 — Bien équipé, il ne peut rien m'arriver",
+    questions:[
+      { label:"Quelle idée reçue cette vidéo tourne-t-elle en dérision ?",
+        options: IDEES_RECUES, correct:2 },
+      { label:"Quel est le danger de cette idée reçue ?",
+        options:[
+          "Elle fait croire que le port des EPI suffit à éliminer tout risque, sans autre vigilance",
+          "Elle est fausse : porter des EPI est inutile",
+          "Elle ne s'applique qu'aux chantiers extérieurs",
+          "Elle concerne uniquement les risques électriques"
+        ], correct:0 },
+      { label:"Que répond la prévention à cette idée reçue ?",
+        options:[
+          "Les EPI réduisent le risque mais ne remplacent pas les bons gestes et une organisation sûre du poste de travail",
+          "Porter des EPI rend inutile toute autre précaution",
+          "Les EPI ne servent qu'à l'image de l'entreprise",
+          "Il suffit de porter un casque pour être protégé de tous les risques"
+        ], correct:0 },
+      { label:"Quelle bonne pratique illustre ce message dans ton atelier ?",
+        options:[
+          "Porter tes EPI ET respecter les procédures et distances de sécurité autour des machines",
+          "Porter tes EPI puis désactiver les protecteurs pour aller plus vite",
+          "Considérer que porter des gants dispense de couper l'alimentation avant une intervention",
+          "Ne porter les EPI que si un contrôle est prévu"
+        ], correct:0 }
+    ]
+  },
+  { id:4, ytId:'38hgvAZ_hc8', episode:"E4 — La prévention, c'est compliqué",
+    questions:[
+      { label:"Quelle idée reçue cette vidéo tourne-t-elle en dérision ?",
+        options: IDEES_RECUES, correct:3 },
+      { label:"Quel est le danger de cette idée reçue ?",
+        options:[
+          "Elle décourage d'agir alors que des gestes simples suffisent souvent",
+          "Elle pousse à trop se former",
+          "Elle ne concerne que les grandes usines",
+          "Elle est vraie : la prévention nécessite un diplôme d'ingénieur"
+        ], correct:0 },
+      { label:"Que répond la prévention à cette idée reçue ?",
+        options:[
+          "Des réflexes simples (ranger, signaler, demander conseil, lire une consigne) suffisent à réduire une grande partie des risques",
+          "Seul le service HSE peut agir sur la prévention",
+          "La prévention demande un budget important, impossible pour les élèves",
+          "Il faut un logiciel spécialisé pour prévenir un risque"
+        ], correct:0 },
+      { label:"Quelle bonne pratique illustre ce message dans ton atelier ?",
+        options:[
+          "Ranger ton poste de travail et signaler tout de suite une anomalie plutôt que d'attendre",
+          "Se dire que la prévention est réservée aux professionnels confirmés",
+          "Reporter indéfiniment le nettoyage d'une zone de circulation",
+          "Considérer que ce n'est pas ton rôle de signaler un danger"
+        ], correct:0 }
+    ]
+  },
+  { id:5, ytId:'ZKJIuL1j5S4', episode:"E5 — Je ne peux rien faire face aux risques",
+    questions:[
+      { label:"Quelle idée reçue cette vidéo tourne-t-elle en dérision ?",
+        options: IDEES_RECUES, correct:4 },
+      { label:"Quel est le danger de cette idée reçue ?",
+        options:[
+          "Elle installe un sentiment d'impuissance qui empêche d'agir alors que chacun a un rôle à jouer",
+          "Elle pousse les salariés à trop en faire",
+          "Elle concerne uniquement les postes de direction",
+          "Elle n'a aucun impact sur le comportement au travail"
+        ], correct:0 },
+      { label:"Que répond la prévention à cette idée reçue ?",
+        options:[
+          "Chaque salarié, même débutant, peut agir : signaler, refuser une situation dangereuse, demander de l'aide",
+          "Seule la direction peut agir sur les risques",
+          "Un jeune salarié n'a pas le droit de signaler un danger",
+          "Il faut attendre d'avoir de l'ancienneté pour pouvoir intervenir"
+        ], correct:0 },
+      { label:"Quelle bonne pratique illustre ce message dans ton atelier ?",
+        options:[
+          "Signaler une situation dangereuse plutôt que de se taire par peur de déranger",
+          "Continuer une tâche dangereuse en pensant que tu ne peux rien changer",
+          "Attendre les instructions même en cas de danger immédiat",
+          "Penser que seul le professeur peut repérer les dangers"
+        ], correct:0 }
+    ]
+  },
+  { id:6, ytId:'ze5PRZPzlOo', episode:"E6 — Au travail, il n'y a pas de risque", isLast:true,
+    questions:[
+      { label:"Quelle idée reçue cette vidéo tourne-t-elle en dérision ?",
+        options: IDEES_RECUES, correct:5 },
+      { label:"Quel est le danger de cette idée reçue ?",
+        options:[
+          "Elle pousse à croire certains postes « sans risque », alors que bruit, TMS, stress ou chutes existent partout",
+          "Elle est vraie pour les métiers de bureau",
+          "Elle ne concerne que les métiers physiques",
+          "Elle est sans conséquence sur le comportement"
+        ], correct:0 },
+      { label:"Que répond la prévention à cette idée reçue ?",
+        options:[
+          "Tout poste de travail comporte des risques à identifier : bruit, chute, chimique, TMS, stress, routier...",
+          "Seuls les métiers du bâtiment comportent des risques",
+          "Un poste « propre » et « au chaud » est nécessairement sans danger",
+          "Le risque zéro existe dans certains métiers"
+        ], correct:0 },
+      { label:"Sur l'ensemble des 6 épisodes, quelle démarche résume le mieux le message de la campagne #MortelTonTaf ?",
+        options:[
+          "Identifier, ne pas banaliser et agir sur les risques, quel que soit le poste ou l'expérience",
+          "Les accidents sont une fatalité qu'il faut accepter",
+          "La sécurité ne concerne que les nouveaux salariés",
+          "Il vaut mieux ignorer les risques pour ne pas se stresser"
+        ], correct:0 }
+    ]
+  }
+];
+
+/* Mapping compétences par filière (conventions Vaucanson) */
+const COMP_BY_FILIERE = {
+  CIP : ['CP02','CP03','CP05'],
+  PMIA: ['CP2.1','CP3.3','CP6.2'],
+  PLP : ['CP02','CP04','CP08']
+};
+
+/* Liens de partage NextCloud par classe — Nuage Éducation */
+const NC_TOKENS = {
+  '2PMIA1':'https://nuage01.apps.education.fr/index.php/s/SFkasij3W8ZdY6X',
+  '2PMIA2':'https://nuage01.apps.education.fr/index.php/s/KWTiQL5cLkQnRkw',
+  '2PMIA3':'https://nuage01.apps.education.fr/index.php/s/Exk55DptbrJHmL8',
+  '2PMIA4':'https://nuage01.apps.education.fr/index.php/s/NyFcyoajmiDHWBN',
+  '2PMIA5':'https://nuage01.apps.education.fr/index.php/s/wbF4sqQkLCCr5Nj',
+  '1PLP':'https://nuage01.apps.education.fr/index.php/s/Q2LF28DBwcDbaZ3',
+  'TPLP':'https://nuage01.apps.education.fr/index.php/s/rq7TaGNDJc7MxZn',
+  '1CIPG1':'https://nuage01.apps.education.fr/index.php/s/ZDYKjyNzsF4LNNC',
+  '1CIPG2':'https://nuage01.apps.education.fr/index.php/s/KQp5LCtEKJsGXRT',
+  '2CIPG1':'https://nuage01.apps.education.fr/index.php/s/kybKoENkrz9qKEo',
+  '2CIPG2':'https://nuage01.apps.education.fr/index.php/s/5XdDxzyAJDFSgF4',
+  'GRETA':'https://nuage01.apps.education.fr/index.php/s/5Zf3m4FodLiToqg'
+};
+
+/* ============================================================
+   ÉTAT GLOBAL
+   ============================================================ */
+let state = {
+  student:{name:'',classe:''},
+  filiere:'',
+  startTime:null,
+  totalSec:7200,
+  remainingSec:7200,
+  paused:false,
+  currentQ:0,
+  answers:{},
+  qTimeStart:null,
+  qTimes:{},
+  keystrokes:0,
+  copyPasteEvents:[],
+  lastActivity:Date.now()
+};
+
+let timerInterval=null, inactivityInterval=null;
+
+/* ============================================================
+   DÉMARRAGE DU TP
+   ============================================================ */
+function startTP(){
+  const name=document.getElementById('studentName').value.trim();
+  const classe=document.getElementById('studentClass').value;
+  if(!name||!classe){alert('Merci de renseigner ton nom et ta classe.');return}
+  state.student.name=name;
+  state.student.classe=classe;
+  state.isGRETA = (classe==='GRETA');
+  if(classe.includes('PMIA')) state.filiere='PMIA';
+  else if(classe.includes('PLP')) state.filiere='PLP';
+  else if(classe.includes('CIP')) state.filiere='CIP';
+  else if(state.isGRETA) state.filiere='GRETA';
+  state.startTime=Date.now();
+  document.getElementById('identityOverlay').style.display='none';
+  buildProgressBar();
+  buildQuestions();
+  updateScoreDisplay();
+  startTimer();
+  startInactivityWatcher();
+  attachGlobalListeners();
+}
+
+/* ============================================================
+   PROGRESS BAR (6 jalons)
+   ============================================================ */
+function buildProgressBar(){
+  const bar=document.getElementById('progressBar');
+  bar.innerHTML='';
+  VIDEOS.forEach(v=>{
+    const j=document.createElement('div');
+    j.className='jalon';
+    j.id='jalon-'+v.id;
+    j.textContent='Vidéo '+v.id;
+    j.style.cursor='pointer';
+    j.onclick=()=>goToQ(v.id);
+    bar.appendChild(j);
+  });
+}
+
+function updateProgressBar(){
+  VIDEOS.forEach(v=>{
+    const j=document.getElementById('jalon-'+v.id);
+    j.classList.remove('done','current');
+    if(state.answers[v.id]&&state.answers[v.id].ok) j.classList.add('done');
+    if(v.id===state.currentQ) j.classList.add('current');
+  });
+}
+
+/* ============================================================
+   CONSTRUCTION DES QUESTIONS
+   ============================================================ */
+/* Mélange déterministe des options (par vidéo+question) pour ne pas toujours
+   avoir la bonne réponse en position A, tout en gardant le même ordre à chaque
+   chargement (facilite la correction par l'enseignant) */
+function shuffledOptions(opts, correctIdx, seed){
+  const idx = opts.map((o,i)=>i);
+  // mélange simple à seed fixe (LCG)
+  let s = seed;
+  for(let i=idx.length-1;i>0;i--){
+    s = (s*1103515245+12345) & 0x7fffffff;
+    const j = s % (i+1);
+    [idx[i],idx[j]]=[idx[j],idx[i]];
+  }
+  const newOptions = idx.map(i=>opts[i]);
+  const newCorrect = idx.indexOf(correctIdx);
+  return {options:newOptions, correct:newCorrect};
+}
+
+function buildQuestions(){
+  const cont=document.getElementById('questionsContainer');
+  cont.innerHTML='';
+  VIDEOS.forEach(v=>{
+    const card=document.createElement('section');
+    card.className='question-card';
+    card.id='q-'+v.id;
+
+    let questionsHTML='';
+    v.questions.forEach((q,qi)=>{
+      const shuffled = shuffledOptions(q.options, q.correct, v.id*17+qi*5+3);
+      q._shuffled = shuffled; // mémorisé pour la validation
+      let optionsHTML = `<option value="">— Sélectionne une réponse —</option>`;
+      shuffled.options.forEach((opt,oi)=>{
+        optionsHTML += `<option value="${oi}">${opt}</option>`;
+      });
+      questionsHTML += `
+        <label class="field-label" for="q-${v.id}-${qi}">${qi+1}. ${q.label}</label>
+        <select class="field-input" id="q-${v.id}-${qi}">
+          ${optionsHTML}
+        </select>
+        <div class="correct-answer" id="q-${v.id}-${qi}-correct"></div>
+      `;
+    });
+
+    card.innerHTML=`
+      <div class="q-header">
+        <span class="q-num">Vidéo ${v.id} / 6</span>
+        <span class="q-tag">#MortelTonTaf</span>
+      </div>
+      <div class="consigne">
+        🎬 <strong>Visionne la vidéo ci-dessous</strong>, puis réponds aux 4 questions en choisissant la bonne réponse dans chaque menu déroulant.
+      </div>
+      <div class="video-wrap">
+        <iframe src="https://www.youtube-nocookie.com/embed/${v.ytId}?rel=0&modestbranding=1"
+                title="${v.episode}"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen loading="lazy"></iframe>
+      </div>
+      <a class="yt-fallback" href="https://www.youtube.com/watch?v=${v.ytId}" target="_blank" rel="noopener">▶ Ouvrir sur YouTube si la vidéo ne se charge pas</a>
+      ${questionsHTML}
+      <div class="feedback" id="feedback-${v.id}"></div>
+      <div class="q-actions">
+        <button class="btn btn-secondary" onclick="prevQ()" ${v.id===1?'disabled':''}>◀ Précédent</button>
+        <button class="btn btn-primary" id="validate-${v.id}" onclick="validateQ(${v.id})">✓ Valider mes réponses</button>
+        <button class="btn btn-success" onclick="nextQ()" id="next-${v.id}" disabled>${v.isLast?'🏁 Voir le bilan':'Suivant ▶'}</button>
+      </div>
+    `;
+    cont.appendChild(card);
+  });
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+function goToQ(n){
+  document.getElementById('introCard').style.display=(n===0)?'block':'none';
+  document.getElementById('bilanSection').style.display='none';
+  VIDEOS.forEach(v=>{
+    const card=document.getElementById('q-'+v.id);
+    if(card) card.classList.remove('active');
+  });
+  if(n>0&&n<=VIDEOS.length){
+    document.getElementById('q-'+n).classList.add('active');
+    state.currentQ=n;
+    recordQTimeStart();
+    window.scrollTo({top:0,behavior:'smooth'});
+  } else if(n>VIDEOS.length){
+    showBilan();
+  }
+  updateProgressBar();
+}
+
+function nextQ(){
+  recordQTimeEnd();
+  if(state.currentQ>=VIDEOS.length) showBilan();
+  else goToQ(state.currentQ+1);
+}
+
+function prevQ(){
+  recordQTimeEnd();
+  if(state.currentQ>1) goToQ(state.currentQ-1);
+}
+
+function recordQTimeStart(){state.qTimeStart=Date.now()}
+function recordQTimeEnd(){
+  if(!state.qTimeStart) return;
+  const dt=Math.round((Date.now()-state.qTimeStart)/1000);
+  state.qTimes[state.currentQ]=(state.qTimes[state.currentQ]||0)+dt;
+  state.qTimeStart=null;
+}
+
+/* ============================================================
+   VALIDATION DES RÉPONSES
+   ============================================================ */
+function validateQ(id){
+  const v=VIDEOS.find(x=>x.id===id);
+  const fbEl=document.getElementById('feedback-'+id);
+
+  let allAnswered=true;
+  v.questions.forEach((q,qi)=>{
+    const selEl=document.getElementById(`q-${id}-${qi}`);
+    if(selEl.value==='') allAnswered=false;
+  });
+
+  if(!allAnswered){
+    fbEl.className='feedback ko';
+    fbEl.innerHTML='<strong>⚠️ Réponse incomplète</strong>Sélectionne une réponse dans chacun des 4 menus déroulants.';
+    return;
+  }
+
+  let nbCorrect=0;
+  const responses=[];
+
+  v.questions.forEach((q,qi)=>{
+    const selEl=document.getElementById(`q-${id}-${qi}`);
+    const correctEl=document.getElementById(`q-${id}-${qi}-correct`);
+    const chosenIdx=parseInt(selEl.value,10);
+    const isCorrect = chosenIdx===q._shuffled.correct;
+    selEl.classList.remove('ok','ko');
+    selEl.classList.add(isCorrect?'ok':'ko');
+    correctEl.classList.remove('show');
+    correctEl.textContent='';
+    if(isCorrect){
+      nbCorrect++;
+    } else {
+      correctEl.textContent='✔ Bonne réponse : '+q._shuffled.options[q._shuffled.correct];
+      correctEl.classList.add('show');
+    }
+    selEl.disabled=true;
+    responses.push({
+      label:q.label,
+      choix:q._shuffled.options[chosenIdx],
+      bonneReponse:q._shuffled.options[q._shuffled.correct],
+      correct:isCorrect
+    });
+  });
+
+  const allOk = nbCorrect===v.questions.length;
+  if(allOk){
+    fbEl.className='feedback ok';
+    fbEl.innerHTML=`<strong>✅ ${nbCorrect}/${v.questions.length} bonnes réponses</strong>Bravo, tu peux passer à la vidéo suivante.`;
+  } else {
+    fbEl.className='feedback ko';
+    fbEl.innerHTML=`<strong>${nbCorrect}/${v.questions.length} bonnes réponses</strong>La bonne réponse est indiquée en vert sous chaque question manquée. Tu peux passer à la suite.`;
+  }
+  document.getElementById('next-'+id).disabled=false;
+  const validateBtn=document.getElementById('validate-'+id);
+  if(validateBtn) validateBtn.disabled=true;
+
+  state.answers[id]={
+    responses,
+    nbCorrect,
+    nbTotal:v.questions.length,
+    ok: allOk,
+    timeSpent: state.qTimes[id]||0
+  };
+  updateProgressBar();
+  updateScoreDisplay();
+}
+
+function updateScoreDisplay(){
+  let total=0, done=0;
+  VIDEOS.forEach(v=>{
+    total += v.questions.length;
+    if(state.answers[v.id]) done += state.answers[v.id].nbCorrect;
+  });
+  const el=document.getElementById('scoreDisplay');
+  if(el) el.textContent = `${done} / ${total}`;
+}
+
+/* ============================================================
+   BILAN FINAL
+   ============================================================ */
+function showBilan(){
+  recordQTimeEnd();
+  VIDEOS.forEach(v=>{
+    const card=document.getElementById('q-'+v.id);
+    if(card) card.classList.remove('active');
+  });
+  document.getElementById('introCard').style.display='none';
+  const bilan=document.getElementById('bilanSection');
+  bilan.style.display='block';
+  state.currentQ=0;
+  updateProgressBar();
+
+  let totalQ=0, correctQ=0, videosDone=0;
+  VIDEOS.forEach(v=>{
+    totalQ += v.questions.length;
+    const a=state.answers[v.id];
+    if(a){ correctQ += a.nbCorrect; videosDone++; }
+  });
+  const pct=Math.round(100*correctQ/totalQ);
+  const elapsed=Math.round((Date.now()-state.startTime)/1000);
+  const hh=Math.floor(elapsed/3600), mm=Math.floor((elapsed%3600)/60), ss=elapsed%60;
+  const elapsedStr=`${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+
+  document.getElementById('bilanGrid').innerHTML=`
+    <div class="bilan-card"><div class="val">${correctQ}/${totalQ}</div><div class="lbl">Bonnes réponses</div></div>
+    <div class="bilan-card"><div class="val">${videosDone}/${VIDEOS.length}</div><div class="lbl">Vidéos traitées</div></div>
+    <div class="bilan-card"><div class="val">${pct}%</div><div class="lbl">Taux de réussite</div></div>
+    <div class="bilan-card"><div class="val">${elapsedStr}</div><div class="lbl">Temps écoulé</div></div>
+  `;
+
+  const niveau = pct>=90 ? 1 : pct>=75 ? 2 : pct>=60 ? 3 : pct>=45 ? 4 : pct>=25 ? 5 : 6;
+  const niveauLabels=['','Excellent','Très bon','Bon','Moyen','Insuffisant','Très insuffisant'];
+  let compHTML='';
+  if(state.isGRETA){
+    const note20=(pct/100*20).toFixed(1);
+    compHTML+=`<div class="competence-row"><span><strong>Note</strong></span><span style="font-size:1.3rem;font-weight:700;color:var(--vc-blue)">${note20} / 20</span></div>`;
+  } else {
+    const compCodes = COMP_BY_FILIERE[state.filiere] || ['CP 9.3','CP 9.5','CP 10.3'];
+    compCodes.forEach(c=>{
+      compHTML+=`<div class="competence-row">
+        <span><strong>${c}</strong></span>
+        <span><span class="comp-badge lvl-${niveau}"></span>${niveauLabels[niveau]}</span>
+      </div>`;
+    });
+  }
+  compHTML+=`<p style="font-size:.82rem;color:var(--muted);margin-top:10px;font-style:italic">Évaluation évolutive, sous réserve du comportement en classe et du travail effectué.</p>`;
+  document.getElementById('competencesBilan').innerHTML=compHTML;
+  updateScoreDisplay();
+
+  clearInterval(timerInterval);
+}
+
+/* ============================================================
+   TIMER 2H
+   ============================================================ */
+function startTimer(){
+  timerInterval=setInterval(()=>{
+    if(state.paused) return;
+    state.remainingSec--;
+    if(state.remainingSec<=0){
+      state.remainingSec=0;
+      clearInterval(timerInterval);
+      alert('⏰ Temps écoulé ! Le TP se termine maintenant.');
+      showBilan();
+    }
+    updateTimerDisplay();
+  },1000);
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay(){
+  const h=Math.floor(state.remainingSec/3600);
+  const m=Math.floor((state.remainingSec%3600)/60);
+  const s=state.remainingSec%60;
+  document.getElementById('timerDisplay').textContent=
+    `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function togglePause(){
+  state.paused=!state.paused;
+  document.getElementById('pauseBtn').textContent=state.paused?'Reprendre':'Pause';
+}
+
+/* ============================================================
+   TRACKING COMPORTEMENTAL
+   ============================================================ */
+function attachGlobalListeners(){
+  document.addEventListener('keydown',()=>{
+    state.keystrokes++;
+    state.lastActivity=Date.now();
+  });
+  document.addEventListener('paste',()=>{
+    state.copyPasteEvents.push({action:'paste',time:new Date().toISOString(),question:state.currentQ});
+    state.lastActivity=Date.now();
+  });
+  document.addEventListener('copy',()=>{
+    state.copyPasteEvents.push({action:'copy',time:new Date().toISOString(),question:state.currentQ});
+    state.lastActivity=Date.now();
+  });
+  document.addEventListener('click',()=>{state.lastActivity=Date.now()});
+}
+
+function startInactivityWatcher(){
+  inactivityInterval=setInterval(()=>{
+    if(state.paused) return;
+    const idle=(Date.now()-state.lastActivity)/1000;
+    const alertBox=document.getElementById('inactivityAlert');
+    alertBox.style.display = idle>300 ? 'block' : 'none';
+  },10000);
+}
+
+/* ============================================================
+   PDF BILAN (PUR JS - sans librairie)
+   ============================================================ */
+function generatePDFBlob(){
+  const lines=[];
+  lines.push(['LYCÉE POLYVALENT VAUCANSON — GRENOBLE',16,true]);
+  lines.push(['Fiche bilan — Prévention des Risques Professionnels',12,true]);
+  lines.push(['#MortelTonTaf',10,false]);
+  lines.push(['',10,false]);
+  lines.push([`Élève : ${state.student.name}`,11,false]);
+  lines.push([`Classe : ${state.student.classe}    Filière : ${state.filiere}`,11,false]);
+  lines.push([`Date : ${new Date().toLocaleDateString('fr-FR')}`,11,false]);
+  lines.push(['',10,false]);
+  lines.push(['--- RÉPONSES ---',12,true]);
+  let totalQ=0, correctQ=0;
+  VIDEOS.forEach(v=>{
+    const a=state.answers[v.id];
+    totalQ += v.questions.length;
+    lines.push([`Vidéo ${v.id} — ${a?a.nbCorrect:0}/${v.questions.length} bonnes réponses`,11,true]);
+    if(a){
+      correctQ += a.nbCorrect;
+      a.responses.forEach((r,ri)=>{
+        lines.push([`  Q${ri+1} : ${r.correct?'[OK]':'[--]'} ${(r.choix||'(sans réponse)').substring(0,90)}`,9,false]);
+      });
+    } else {
+      lines.push(['  (non traitée)',9,false]);
+    }
+    lines.push(['',10,false]);
+  });
+  const pct=Math.round(100*correctQ/totalQ);
+  if(state.isGRETA){
+    const note20=(pct/100*20).toFixed(1);
+    lines.push(['--- NOTE ---',12,true]);
+    lines.push([`  NOTE : ${note20} / 20`,11,false]);
+  } else {
+    lines.push(['--- COMPÉTENCES ---',12,true]);
+    const compCodes = COMP_BY_FILIERE[state.filiere] || ['CP 9.3','CP 9.5','CP 10.3'];
+    const niveau = pct>=90?'Excellent':pct>=75?'Très bon':pct>=60?'Bon':pct>=45?'Moyen':pct>=25?'Insuffisant':'Très insuffisant';
+    compCodes.forEach(c=>lines.push([`  ${c} : ${niveau}`,10,false]));
+  }
+  lines.push(['  Évaluation évolutive, sous réserve du comportement en classe et du travail effectué.',9,false]);
+  lines.push(['',10,false]);
+  lines.push([`Score : ${correctQ}/${totalQ} (${pct}%)   Frappes : ${state.keystrokes}   Copier-coller : ${state.copyPasteEvents.length}`,9,false]);
+
+  let stream='BT\n/F1 12 Tf\n';
+  let y=780;
+  lines.forEach(([txt,size,bold])=>{
+    const safeTxt=String(txt).replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)').replace(/[éèêë]/g,'e').replace(/[àâä]/g,'a').replace(/[ùûü]/g,'u').replace(/[îï]/g,'i').replace(/[ôö]/g,'o').replace(/[ç]/g,'c').replace(/[É]/g,'E').replace(/[À]/g,'A');
+    stream+=`/F${bold?2:1} ${size} Tf\n1 0 0 1 50 ${y} Tm\n(${safeTxt}) Tj\n`;
+    y-=size+4;
+    if(y<60){y=780;stream+='ET\n\n--PAGEBREAK--\n\nBT\n'}
+  });
+  stream+='ET';
+
+  const pdf=`%PDF-1.4
+1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj
+2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj
+3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 595 842]/Contents 4 0 R/Resources<</Font<</F1 5 0 R/F2 6 0 R>>>>>>endobj
+4 0 obj<</Length ${stream.length}>>stream
+${stream}
+endstream endobj
+5 0 obj<</Type/Font/Subtype/Type1/BaseFont/Helvetica>>endobj
+6 0 obj<</Type/Font/Subtype/Type1/BaseFont/Helvetica-Bold>>endobj
+xref
+0 7
+0000000000 65535 f
+0000000009 00000 n
+0000000058 00000 n
+0000000110 00000 n
+0000000218 00000 n
+0000000${(300+stream.length).toString().padStart(3,'0')} 00000 n
+0000000${(360+stream.length).toString().padStart(3,'0')} 00000 n
+trailer<</Size 7/Root 1 0 R>>
+startxref
+${430+stream.length}
+%%EOF`;
+
+  const blob=new Blob([pdf],{type:'application/pdf'});
+  const filename=`Bilan_${state.student.name.replace(/\s+/g,'_')}_${state.student.classe}_PreventionRisques.pdf`;
+  return {blob, filename};
+}
+
+function downloadPDF(){
+  const {blob, filename} = generatePDFBlob();
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* Extrait le token d'un lien de partage NextCloud (dernier segment d'URL) */
+function extractShareToken(shareUrl){
+  const parts = shareUrl.split('/');
+  return parts[parts.length-1];
+}
+
+/* ============================================================
+   ENVOI AU PROFESSEUR (NextCloud)
+   Tente d'abord un envoi automatique en arrière-plan (WebDAV).
+   Si le serveur bloque la requête (CORS, réseau de l'établissement),
+   bascule automatiquement sur le dépôt manuel (téléchargement + ouverture
+   du dossier de la classe).
+   ============================================================ */
+async function uploadNextcloud(){
+  const statusEl=document.getElementById('uploadStatus');
+  const shareUrl=NC_TOKENS[state.student.classe];
+  if(!shareUrl){
+    statusEl.innerHTML='❌ <span style="color:var(--ko)">Aucun dossier de dépôt configuré pour cette classe.</span>';
+    return;
+  }
+
+  statusEl.innerHTML='⏳ Envoi en cours...';
+  const {blob, filename} = generatePDFBlob();
+  const token = extractShareToken(shareUrl);
+
+  let autoOk=false;
+  try{
+    const webdavUrl = `https://nuage01.apps.education.fr/public.php/webdav/${encodeURIComponent(filename)}`;
+    const resp = await fetch(webdavUrl,{
+      method:'PUT',
+      headers:{
+        'Authorization':'Basic '+btoa(token+':'),
+        'Content-Type':'application/pdf'
+      },
+      body:blob,
+      mode:'cors'
+    });
+    if(resp.ok || resp.status===201 || resp.status===204) autoOk=true;
+  }catch(e){
+    console.warn('Envoi automatique bloqué (CORS/réseau), bascule sur le dépôt manuel :', e);
+  }
+
+  if(autoOk){
+    statusEl.innerHTML=`✅ <span style="color:var(--ok)">Ton bilan a été envoyé automatiquement au professeur (dossier <strong>${state.student.classe}</strong>) !</span>`;
+    return;
+  }
+
+  // Repli : téléchargement local + ouverture du dossier pour dépôt manuel
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=filename; a.click();
+  URL.revokeObjectURL(url);
+  window.open(shareUrl,'_blank');
+  statusEl.innerHTML=`⚠️ <span style="color:var(--ko)">Envoi automatique impossible depuis ce réseau.</span><br><span style="font-size:.85rem;color:var(--muted)">Ton PDF a été téléchargé et le dossier NextCloud de la classe <strong>${state.student.classe}</strong> vient de s'ouvrir dans un nouvel onglet : glisse-dépose ton fichier dedans pour le transmettre à ton professeur.</span>`;
+}
+
+</script>
+</body>
+</html>
